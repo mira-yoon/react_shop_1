@@ -4,62 +4,69 @@ import { Navbar, Container, Nav} from 'react-bootstrap';
 import bg from './img/bg.png';
 import data from './data'
 import { useState } from 'react';
+import {Routes, Route, useNavigate} from "react-router-dom";
+import Detail from './routes/Detail'
 
 function App() {
 
-  let [shoes, setShoes] = useState(data);
+  let [shoes] = useState(data);
+  let navigate = useNavigate();
 
   return (
     <div className="App">
+
       <Navbar bg="light" variant="light">
         <Container>
           <Navbar.Brand href="#home">Navbar</Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#features">Features</Nav.Link>
-            <Nav.Link href="#pricing">Pricing</Nav.Link>
+            <Nav.Link onClick={()=>{ navigate('/') }}>Home</Nav.Link>
+            <Nav.Link onClick={()=>{ navigate('/detail') }}>상세페이지</Nav.Link>
+            {/* <Nav.Link href="#home"><Link to="/">Home</Link></Nav.Link>
+            <Nav.Link href="#features"><Link to="/detail">상세페이지</Link></Nav.Link> */}
           </Nav>
         </Container>
       </Navbar>
 
+      <Routes>
+        <Route path="/" element={<Home shoes={shoes} />}></Route>
+        <Route path="/detail/:id" element={<Detail shoes={shoes} />}></Route>
+        <Route path="*" element={<div>없는 페이지 입니다.</div>}></Route>
+      </Routes>
+
+    </div>
+  );
+}
+
+function Home(props) {
+
+  return (
+    <>
       <div className='main-bg' style={{backgroundImage : 'url('+bg+')'}}></div>
 
       <div className='container'>
         <div className='row'>
+        {
+          props.shoes.map(function(elem, i){
+            return (
+              <Card shoes={props.shoes} i={i} key={i} />
+            )
+          })
+        }
 
-          {
-            shoes.map(function(elem, i){
-              return (
-                <div className='col-md-4'>
-                  <img src={process.env.PUBLIC_URL + `/img/shoes${i+1}.jpg`} width="80%" />
-                  <h4>{shoes[i].title}</h4>
-                  <p>{shoes[i].content}</p>
-                </div>
-              )
-            })
-          }
-
-
-          {/* <div className='col-md-4'>
-            <img src={process.env.PUBLIC_URL + '/img/shoes1.jpg'} alt="" width="80%" />
-            <h4>{shoes[0].title}</h4>
-            <p>설명</p>
-          </div>
-          <div className='col-md-4'>
-            <img src={process.env.PUBLIC_URL + '/img/shoes2.jpg'} alt="" width="80%" />
-            <h4>상품명</h4>
-            <p>설명</p>
-          </div>
-          <div className='col-md-4'>
-            <img src={process.env.PUBLIC_URL + '/img/shoes3.jpg'} alt="" width="80%" />
-            <h4>상품명</h4>
-            <p>설명</p>
-          </div> */}
         </div>
       </div>
+    </>
+  )
+}
 
+function Card(props) {
+  return (
+    <div className='col-md-4'>
+      <img src={process.env.PUBLIC_URL + `/img/shoes${props.i+1}.jpg`} width="80%" alt="상품이미지" />
+      <h4>{props.shoes[props.i].title}</h4>
+      <p>{props.shoes[props.i].price}원</p>
     </div>
-  );
+  )
 }
 
 export default App;
