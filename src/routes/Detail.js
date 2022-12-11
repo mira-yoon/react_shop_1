@@ -1,14 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Nav } from 'react-bootstrap';
-import {Context1} from './../App.js';
 
 function Detail(props) {
-
-
-  let {재고} = useContext(Context1)
-  
-  
 
   let [count, setCount] = useState(0);
   let [pop, setPop] = useState(true);
@@ -48,7 +42,6 @@ function Detail(props) {
         : null
       }
       {count}
-      {재고}
       <button onClick={()=>{setCount(count+1)}}>버튼</button>
       <div className="row">
         <div className="col-md-6">
@@ -74,16 +67,15 @@ function Detail(props) {
           <Nav.Link onClick={()=>{setTab(2)}} eventKey="link2">버튼2</Nav.Link>
         </Nav.Item>
       </Nav>
-      <TabContent tab={tab} shoes={props.shoes} />
+      <TabContent tab={tab} />
 
     </div> 
   )
 }
 
-function TabContent({tab,shoes}){
+function TabContent({tab}){
 
   let [fade, setFade] = useState('');
-  let {재고} = useContext(Context1);
 
   useEffect(()=>{
     setTimeout(()=>{ setFade('end'); },100) // 0.1초 후에 부착
@@ -94,19 +86,9 @@ function TabContent({tab,shoes}){
 
   return (
     <div className= {`start ${fade}`}>
-      { [<div>내용0 {shoes[0].title} {재고}</div>, <div>내용1</div>, <div>내용2</div>][tab] }
+      { [<div>내용0</div>, <div>내용1</div>, <div>내용2</div>][tab] }
     </div>
   ) 
-
-  // if(tab == 0){
-  //   return <div>내용0</div>
-  // }
-  // if(tab == 1){
-  //   return <div>내용1</div>
-  // }
-  // if(tab == 2){
-  //   return <div>내용2</div>
-  // }
 }
 
 export default Detail;

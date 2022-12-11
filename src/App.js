@@ -7,13 +7,11 @@ import { useState } from 'react';
 import {Routes, Route, useNavigate} from "react-router-dom";
 import Detail from './routes/Detail';
 import axios from 'axios';
-import React from 'react';
-export let Context1 = React.createContext();
+import Cart from './routes/Cart';
 
 function App() {
 
   let [shoes, setShoes] = useState(data);
-  let [재고] = useState([10, 11, 12]);
 
   let navigate = useNavigate();
   
@@ -26,6 +24,7 @@ function App() {
           <Nav className="me-auto">
             <Nav.Link onClick={()=>{ navigate('/') }}>Home</Nav.Link>
             <Nav.Link onClick={()=>{ navigate('/detail/0') }}>상세페이지</Nav.Link>
+            <Nav.Link onClick={()=>{ navigate('/cart') }}>Cart</Nav.Link>
           </Nav>
         </Container>
       </Navbar>
@@ -33,10 +32,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Home shoes={shoes} setShoes={setShoes} />}></Route>
         <Route path="/detail/:id" element={
-          <Context1.Provider value={{shoes, 재고}}>
-            <Detail shoes={shoes} />
-          </Context1.Provider>
+          <Detail shoes={shoes} />
         }></Route>
+        <Route path="/cart" element={ <Cart />}></Route>
         <Route path="*" element={<div>없는 페이지 입니다.</div>}></Route>
       </Routes>
 
