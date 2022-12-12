@@ -17,6 +17,15 @@ function Detail(props) {
   let shoes = props.shoes.find((element)=> element.id == id);
 
   useEffect(()=>{
+    let savedItem = localStorage.getItem('watched');
+    savedItem = JSON.parse(savedItem);
+    savedItem.push(shoes.id);
+    savedItem = new Set(savedItem);
+    savedItem = Array.from(savedItem)
+    localStorage.setItem('watched', JSON.stringify( savedItem ))
+  },[]) 
+
+  useEffect(()=>{
     setTimeout(()=>{setPop(false)},2000);
   })
 
