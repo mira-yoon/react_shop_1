@@ -11,8 +11,22 @@ let cart = createSlice({
   initialState: [
     {id : 0, name : 'White and Black', count : 2},
     {id : 2, name : 'Grey Yordan', count : 1}
-  ]
+  ],
+  reducers : {
+    increase(state, action){
+      // let prod = state.find((element)=> element.id == action.payload);
+      // prod.count++;
+
+      let index = state.findIndex((a)=>{return a.id == action.payload});
+      state[index].count++;
+    },
+    order(state, action){
+      state.push(action.payload);
+    }
+  }
 })
+
+export let {increase, order} = cart.actions;
 
 export default configureStore({
   reducer: { 

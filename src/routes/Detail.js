@@ -1,8 +1,12 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Nav } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
+import { order } from './../store';
 
 function Detail(props) {
+
+  let disPatch = useDispatch();
 
   let [count, setCount] = useState(0);
   let [pop, setPop] = useState(true);
@@ -11,7 +15,6 @@ function Detail(props) {
 
   let {id} = useParams(); 
   let shoes = props.shoes.find((element)=> element.id == id);
-
 
   useEffect(()=>{
     setTimeout(()=>{setPop(false)},2000);
@@ -52,7 +55,10 @@ function Detail(props) {
           <h4 className="pt-5">{shoes.title}</h4>
           <p>{shoes.price}</p>
           <p>{shoes.content}</p>
-          <button className="btn btn-danger">주문하기</button> 
+          <button className="btn btn-danger" onClick={()=>{
+            let copy = {id: shoes.id, name: shoes.title, count: 1};
+            disPatch(order(copy));
+          }}>주문하기</button> 
         </div>
       </div>
 

@@ -7,8 +7,8 @@ let user = createSlice({
     changeName(state) { // 여기 파라미터 넣으면 기존 state이다.
       state.name = "Park"
     },
-    plusAge(state, a){
-      state.age += a.payload;
+    plusAge(state, action){
+      state.age += action.payload;
     }
   }
 })
