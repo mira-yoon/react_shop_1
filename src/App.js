@@ -3,24 +3,33 @@ import './App.css';
 import { Navbar, Container, Nav} from 'react-bootstrap';
 import bg from './img/bg.png';
 import data from './data'
-import { useState, useEffect } from 'react';
+import { lazy, Suspense, useState, useEffect } from 'react';
 import {Routes, Route, useNavigate} from "react-router-dom";
-import Detail from './routes/Detail';
 import axios from 'axios';
-import Cart from './routes/Cart';
+// import Detail from './routes/Detail';
+// import Cart from './routes/Cart';
+
+const Detail = lazy( () => import('./routes/Detail.js') )
+const Cart = lazy( () => import('./routes/Cart.js') )
 
 function App() {
 
-  useEffect(()=>{
-    let savedValue = localStorage.getItem('watched');
-    if(savedValue === null) {
-      localStorage.setItem('watched', JSON.stringify( [] ))
-    }
-  },[]) 
+  let [shoesId, setShoesId] = useState([]); // 초기값을 ""으로 하면 재랜더링시 에러난다.
 
   let [shoes, setShoes] = useState(data);
 
   let navigate = useNavigate();
+
+  useEffect(()=>{
+    let watchedItemId = localStorage.getItem('watched');
+    if(watchedItemId !== null) {
+      watchedItemId = JSON.parse(watchedItemId);
+      setShoesId(watchedItemId);
+    }else {
+      localStorage.setItem('watched', JSON.stringify( [] ))
+    }
+  },[]) 
+
   
   return (
     <div className="App">
@@ -34,15 +43,17 @@ function App() {
           </Nav>
         </Container>
       </Navbar>
-
-      <Routes>
-        <Route path="/" element={<Home shoes={shoes} setShoes={setShoes} navigate={navigate} />}></Route>
-        <Route path="/detail/:id" element={
-          <Detail shoes={shoes} />
-        }></Route>
-        <Route path="/cart" element={ <Cart />}></Route>
-        <Route path="*" element={<div>없는 페이지 입니다.</div>}></Route>
-      </Routes>
+      
+      <Suspense fallback={ <div>로딩중임</div> }>
+        <Routes>
+          <Route path="/" element={<Home shoes={shoes} setShoes={setShoes} navigate={navigate} shoesId = {shoesId} />}></Route>
+          <Route path="/detail/:id" element={
+            <Detail shoes={shoes} />
+          }></Route>
+          <Route path="/cart" element={ <Cart />}></Route>
+          <Route path="*" element={<div>없는 페이지 입니다.</div>}></Route>
+        </Routes>
+      </Suspense>
 
     </div>
   );
@@ -77,6 +88,29 @@ function Home(props) {
           console.log("실패함");
         })
       }}>버튼</button>
+
+
+      {
+        props.shoesId.length !== 0
+        ? <div className='watched-item'>
+            <h3>최근 본 상품</h3>  
+            {  
+              props.shoesId.map(function(elem, i){
+                let watchedShoes = props.shoes.find((element)=> element.id == elem);
+                return (
+                  <div key={i}>
+                    <h4>{watchedShoes.title}</h4>
+                    <p>{watchedShoes.price}원</p>
+                  </div>
+                )
+              })
+            }
+          </div>
+        : null  
+      }
+
+      
+
     </>
   )
 }
